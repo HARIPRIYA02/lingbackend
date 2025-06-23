@@ -28,7 +28,7 @@ const QuizPage: React.FC = () => {
   const apiBase = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
-    fetch(`${apiBase}/api/questions`)
+    fetch(`${apiBase}/questions`)
       .then(res => res.json())
       .then(data => setQuizData(data))
       .catch(err => console.error('Failed to load questions:', err));
@@ -71,14 +71,14 @@ const QuizPage: React.FC = () => {
 
   useEffect(() => {
     if (showLeaderboard && !scoreSubmitted) {
-      fetch(`${apiBase}/api/leaderboard`, {
+      fetch(`${apiBase}/leaderboard`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: playerName, score })
       })
         .then(() => {
           setScoreSubmitted(true);
-          return fetch(`${apiBase}/api/leaderboard`);
+          return fetch(`${apiBase}/leaderboard`);
         })
         .then(res => res.json())
         .then(data => setLeaderboard(data))
