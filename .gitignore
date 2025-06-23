@@ -2,3 +2,4 @@
 /lingbackend/node_modules
 /acnr-game/.env
 /lingbackend/.env
+/lingbackend/dist
