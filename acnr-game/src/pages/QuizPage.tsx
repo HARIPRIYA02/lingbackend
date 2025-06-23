@@ -25,23 +25,24 @@ const QuizPage: React.FC = () => {
   const [nameEntered, setNameEntered] = useState(false);
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
+  const apiBase = process.env.REACT_APP_API_URL;
+
   useEffect(() => {
-    fetch('http://localhost:5000/questions')
+    fetch(`${apiBase}/api/questions`)
       .then(res => res.json())
       .then(data => setQuizData(data))
       .catch(err => console.error('Failed to load questions:', err));
-  }, []);
+  }, [apiBase]);
 
   useEffect(() => {
     if (quizData.length === 0 || showSummary || !nameEntered) return;
 
-    setTimeLeft(10);  // Reset timer
-
+    setTimeLeft(10);
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleAnswer('');  // Auto move on if no answer
+          handleAnswer('');
           return 0;
         }
         return prev - 1;
@@ -67,22 +68,23 @@ const QuizPage: React.FC = () => {
       setShowSummary(true);
     }
   };
+
   useEffect(() => {
-  if (showLeaderboard && !scoreSubmitted) {
-    fetch('http://localhost:5000/leaderboard', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: playerName, score })
-    })
-      .then(() => {
-        setScoreSubmitted(true);  // ✅ Mark score as submitted
-        return fetch('http://localhost:5000/leaderboard');
+    if (showLeaderboard && !scoreSubmitted) {
+      fetch(`${apiBase}/api/leaderboard`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: playerName, score })
       })
-      .then(res => res.json())
-      .then(data => setLeaderboard(data))
-      .catch(err => console.error('Failed to load leaderboard:', err));
-  }
-}, [showLeaderboard, scoreSubmitted, score, playerName]);
+        .then(() => {
+          setScoreSubmitted(true);
+          return fetch(`${apiBase}/api/leaderboard`);
+        })
+        .then(res => res.json())
+        .then(data => setLeaderboard(data))
+        .catch(err => console.error('Failed to load leaderboard:', err));
+    }
+  }, [showLeaderboard, scoreSubmitted, score, playerName, apiBase]);
 
   if (!nameEntered) {
     return (
@@ -227,44 +229,44 @@ const QuizPage: React.FC = () => {
             textAlign: 'center'
           }}>
             <h3 style={{
-  color: '#111',
-  marginBottom: '1rem',
-  fontSize: '2rem',
-  fontWeight: '900',
-  textTransform: 'uppercase',
-  letterSpacing: '1px'
-}}>
-  🚀 Top 10 for this week!
-</h3>
-<p style={{
-  color: '#555',
-  fontSize: '1rem',
-  marginBottom: '1.5rem'
-}}>
-  Can you beat the best? Stay on top of your slang game!
-</p>
-<table style={{
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '1.2rem'
-}}>
-  <thead>
-    <tr>
-      <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Rank</th>
-      <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Name</th>
-      <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Score</th>
-    </tr>
-  </thead>
-  <tbody>
-    {leaderboard.map((entry, idx) => (
-      <tr key={idx}>
-        <td style={{ padding: '0.5rem', color: 'navy'}}>{idx + 1}</td>
-        <td style={{ padding: '0.5rem', color: 'navy', fontWeight: '700' }}>{entry.name}</td>
-        <td style={{ padding: '0.5rem', color: 'navy' }}>{entry.score}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+              color: '#111',
+              marginBottom: '1rem',
+              fontSize: '2rem',
+              fontWeight: '900',
+              textTransform: 'uppercase',
+              letterSpacing: '1px'
+            }}>
+              🚀 Top 10 for this week!
+            </h3>
+            <p style={{
+              color: '#555',
+              fontSize: '1rem',
+              marginBottom: '1.5rem'
+            }}>
+              Can you beat the best? Stay on top of your slang game!
+            </p>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: '1.2rem'
+            }}>
+              <thead>
+                <tr>
+                  <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Rank</th>
+                  <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Name</th>
+                  <th style={{ borderBottom: '2px solid #ccc', padding: '0.5rem', textAlign: 'center' }}>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {leaderboard.map((entry, idx) => (
+                  <tr key={idx}>
+                    <td style={{ padding: '0.5rem', color: 'navy' }}>{idx + 1}</td>
+                    <td style={{ padding: '0.5rem', color: 'navy', fontWeight: '700' }}>{entry.name}</td>
+                    <td style={{ padding: '0.5rem', color: 'navy' }}>{entry.score}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             <button
               onClick={() => setShowLeaderboard(false)}
               style={{
