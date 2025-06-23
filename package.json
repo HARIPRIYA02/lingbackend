@@ -1,10 +1,11 @@
 {
   "name": "lingowebappproj",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "concurrently \"npm start --prefix acnr-game\" \"npm start --prefix lingbackend\""
+    "dev": "concurrently \"cd lingbackend && npm start\" \"cd acnr-game && npm start\""
   },
   "devDependencies": {
-    "concurrently": "^7.6.0"
+    "concurrently": "^8.2.2"
   }
 }
