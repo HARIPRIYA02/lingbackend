@@ -47,10 +47,3 @@
   }
 ]
 }
-=======
-{
-"rewrites": [
-    {"source": "/(.*)", "destination": "/"}
-]
-}
->>>>>>> 59eee60c4fe23279a7f60a8453bb268b02ff0e8e
