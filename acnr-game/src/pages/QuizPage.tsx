@@ -26,7 +26,7 @@ const QuizPage: React.FC = () => {
   const [scoreSubmitted, setScoreSubmitted] = useState(false);
 
   useEffect(() => {
-    fetch('http://lingbackendproj.onrender.com:5000/questions')
+    fetch('https://lingbackendproj.onrender.com:5000/questions')
       .then(res => res.json())
       .then(data => setQuizData(data))
       .catch(err => console.error('Failed to load questions:', err));
@@ -69,14 +69,14 @@ const QuizPage: React.FC = () => {
   };
   useEffect(() => {
   if (showLeaderboard && !scoreSubmitted) {
-    fetch('http://lingbackendproj.onrender.com:5000/leaderboard', {
+    fetch('https://lingbackendproj.onrender.com:5000/leaderboard', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: playerName, score })
     })
       .then(() => {
         setScoreSubmitted(true);  // ✅ Mark score as submitted
-        return fetch('http://lingbackendproj.onrender.com:5000/leaderboard');
+        return fetch('https://lingbackendproj.onrender.com:5000/leaderboard');
       })
       .then(res => res.json())
       .then(data => setLeaderboard(data))
