@@ -6,7 +6,8 @@ import { Pool } from 'pg';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({origin: 'https://frontendapp-1c92.onrender.com', methods: ['GET', 'POST'],
+  credentials: true}));
 app.use(express.json());
 
 
